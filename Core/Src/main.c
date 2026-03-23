@@ -97,7 +97,6 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  char* msg = "hello\n";
   motor_modbus_init();
 
   
@@ -110,18 +109,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    /*
-     * ===== 诊断测试: 逐级验证 UART 发送 =====
-     * 步骤1: 直接 HAL 发送 "A" — 能收到说明 UART 正常
-     * 步骤2: 手动构造 ModBus 帧, 直接 HAL 发送 — 能收到说明帧数据本身没问题
-     * 步骤3: 通过 modbus_rtu_send_frame 发送 — 能收到说明底层封装没问题
-     * 步骤4: 通过 debug 接口发送 — 能收到说明整条链路没问题
-     * 看示波器上哪一步之后波形消失, 就定位到了问题所在。
-     * 每一步之间用 HAL_Delay 隔开, 便于在示波器上区分。
-     */
     motor_modbus_heartbeat_tick(300);
     HAL_Delay(10);
     motor_modbus_read_fault_info(&fault, 300U);
+    HAL_Delay(10);
+    motor_modbus_set_target_current_ma(1000,300);
+    // motor_modbus_set_current_mode(300);
+    motor_modbus_heartbeat_tick(300);
     // motor_modbus_read_speed_erpm(&speed_erpm, 300U);
     // motor_modbus_heartbeat_tick(300);
 
@@ -144,7 +138,7 @@ int main(void)
     /* 步骤3: 通过 modbus_rtu_send_frame 发送同一帧 */
     // {
     //   uint8_t payload[4] = {0x17, 0x72, 0x00, 0x64};
-    //   modbus_status_t s = modbus_rtu_send_frame(0x01U, 0x06U, payload, 4U, 500U);
+      // modbus_status_t s = modbus_rtu_send_frame(0x01U, 0x06U, payload, 4U, 500U);
     //   /* 把返回值编码成 '0'-'5' 发出来: 0=OK,1=PARAM,2=CRC,3=TIMEOUT,4=PROTOCOL,5=HAL */
     //   uint8_t code = (uint8_t)('0' + (uint8_t)s);
     //   HAL_UART_Transmit(&huart3, &code, 1U, 500U);
