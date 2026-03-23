@@ -210,6 +210,59 @@ modbus_status_t modbus_rtu_read_holding_registers(uint8_t slave_addr,
   return MODBUS_OK;
 }
 
+modbus_status_t modbus_rtu_read_input_registers(uint8_t slave_addr,
+                                               uint16_t start_addr,
+                                               uint16_t quantity,
+                                               uint16_t *register_buf,
+                                               uint16_t register_buf_size,
+                                               uint32_t timeout_ms)
+{
+  uint8_t tx_payload[4] = {0};
+  uint8_t rx_adu[MODBUS_MAX_ADU_SIZE] = {0};
+  uint16_t expect_len = 0U;
+  uint16_t rx_len = 0U;
+  uint16_t i = 0U;
+  modbus_status_t status;
+
+  if ((quantity == 0U) || (quantity > 125U) ||
+      (register_buf == NULL) || (register_buf_size < quantity))
+  {
+    return MODBUS_ERR_PARAM;
+  }
+
+  tx_payload[0] = (uint8_t)((start_addr >> 8U) & 0x00FFU);
+  tx_payload[1] = (uint8_t)(start_addr & 0x00FFU);
+  tx_payload[2] = (uint8_t)((quantity >> 8U) & 0x00FFU);
+  tx_payload[3] = (uint8_t)(quantity & 0x00FFU);
+
+  expect_len = (uint16_t)(5U + (quantity * 2U));
+  status = modbus_rtu_request(slave_addr,
+                              MODBUS_FUNC_READ_INPUT_REGISTERS,
+                              tx_payload,
+                              4U,
+                              rx_adu,
+                              expect_len,
+                              &rx_len,
+                              timeout_ms);
+  if (status != MODBUS_OK)
+  {
+    return status;
+  }
+
+  if ((rx_len != expect_len) || (rx_adu[2] != (uint8_t)(quantity * 2U)))
+  {
+    return MODBUS_ERR_PROTOCOL;
+  }
+
+  for (i = 0U; i < quantity; i++)
+  {
+    register_buf[i] = (uint16_t)(((uint16_t)rx_adu[3U + (2U * i)] << 8U) |
+                                  rx_adu[4U + (2U * i)]);
+  }
+
+  return MODBUS_OK;
+}
+
 modbus_status_t modbus_rtu_write_single_register(uint8_t slave_addr,
                                                  uint16_t register_addr,
                                                  uint16_t value,

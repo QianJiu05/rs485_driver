@@ -293,6 +293,63 @@ modbus_status_t motor_modbus_set_speed_control_rpm(int32_t speed_rpm,
 }
 
 /**
+ * @brief 读取故障信息寄存器(5000)。
+ * @param fault_info 输出指针, 接收故障码。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 读取成功。
+ * @retval 其他值 读取失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_read_fault_info(uint16_t *fault_info,
+                                             uint32_t timeout_ms)
+{
+  if (fault_info == NULL)
+  {
+    return MODBUS_ERR_PARAM;
+  }
+
+  return modbus_rtu_read_input_registers((uint8_t)MOTOR_MODBUS_SLAVE_ID,
+                                         MOTOR_MODBUS_REG_FAULT_INFO,
+                                         1U,
+                                         fault_info,
+                                         1U,
+                                         timeout_ms);
+}
+
+/**
+ * @brief 读取实时转速(5001-5002), 单位 erpm。
+ * @param speed_erpm 输出指针, 接收32位有符号转速值(erpm)。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 读取成功。
+ * @retval 其他值 读取失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_read_speed_erpm(int32_t *speed_erpm,
+                                             uint32_t timeout_ms)
+{
+  uint16_t reg_buf[2] = {0};
+  modbus_status_t status;
+
+  if (speed_erpm == NULL)
+  {
+    return MODBUS_ERR_PARAM;
+  }
+
+  status = modbus_rtu_read_input_registers((uint8_t)MOTOR_MODBUS_SLAVE_ID,
+                                           MOTOR_MODBUS_REG_REALTIME_SPEED_H,
+                                           2U,
+                                           reg_buf,
+                                           2U,
+                                           timeout_ms);
+  if (status != MODBUS_OK)
+  {
+    return status;
+  }
+
+  /* 高16位在 reg_buf[0], 低16位在 reg_buf[1] */
+  *speed_erpm = (int32_t)(((uint32_t)reg_buf[0] << 16U) | (uint32_t)reg_buf[1]);
+  return MODBUS_OK;
+}
+
+/**
  * @brief 调试用: 纯发送目标电流帧, 不等待从站响应。
  * @param current_10ma 目标电流值，单位10mA。
  * @param timeout_ms UART发送超时时间，单位毫秒。

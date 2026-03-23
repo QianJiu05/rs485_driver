@@ -1,10 +1,10 @@
 --cpu=Cortex-M4.fp.sp
 "motor\startup_stm32f407xx.o"
+"motor\modbus_rtu.o"
+"motor\motor_modbus.o"
 "motor\main.o"
 "motor\stm32f4xx_it.o"
 "motor\stm32f4xx_hal_msp.o"
-"motor\modbus_rtu.o"
-"motor\motor_modbus.o"
 "motor\stm32f4xx_hal_uart.o"
 "motor\stm32f4xx_hal_rcc.o"
 "motor\stm32f4xx_hal_rcc_ex.o"

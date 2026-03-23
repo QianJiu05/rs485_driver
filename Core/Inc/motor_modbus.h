@@ -29,6 +29,9 @@ extern "C" {
 #define MOTOR_MODBUS_REG_SPEED_LOOP_ACCEL_H    SPEED_LOOP_ACCEL_REG_H
 #define MOTOR_MODBUS_REG_SPEED_LOOP_DECEL_H    SPEED_LOOP_DECEL_REG_H
 
+#define MOTOR_MODBUS_REG_FAULT_INFO            FAULT_INFO_REG
+#define MOTOR_MODBUS_REG_REALTIME_SPEED_H      REALTIME_SPEED_REG_H
+
 #define MOTOR_MODBUS_MODE_CURRENT_CONTROL      (0U)
 #define MOTOR_MODBUS_MODE_SPEED_CONTROL        (1U)
 
@@ -71,6 +74,22 @@ modbus_status_t motor_modbus_set_target_speed_rpm(int32_t speed_rpm,
 modbus_status_t motor_modbus_set_speed_control_rpm(int32_t speed_rpm,
                                                    uint16_t pole_pairs,
                                                    uint32_t timeout_ms);
+
+/**
+ * @brief 读取故障信息寄存器(5000)。
+ * @param fault_info 输出: 故障码。
+ * @param timeout_ms 通信超时时间。
+ */
+modbus_status_t motor_modbus_read_fault_info(uint16_t *fault_info,
+                                             uint32_t timeout_ms);
+
+/**
+ * @brief 读取实时转速(5001-5002), 单位 erpm。
+ * @param speed_erpm 输出: 实时转速(erpm)。
+ * @param timeout_ms 通信超时时间。
+ */
+modbus_status_t motor_modbus_read_speed_erpm(int32_t *speed_erpm,
+                                             uint32_t timeout_ms);
 
 /**
  * @brief 调试用: 纯发送目标电流帧, 不等待响应。

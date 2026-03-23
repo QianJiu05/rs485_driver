@@ -61,7 +61,8 @@ static void MX_USART3_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint16_t fault = 100U;
+int32_t speed_erpm = 0;
 /* USER CODE END 0 */
 
 /**
@@ -96,10 +97,8 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-char* msg = "hello\n";
-      HAL_UART_Transmit(&huart3, msg, strlen(msg), 500U);
-
-  // motor_modbus_init();
+  char* msg = "hello\n";
+  motor_modbus_init();
 
   
   /* USER CODE END 2 */
@@ -120,25 +119,29 @@ char* msg = "hello\n";
      * 看示波器上哪一步之后波形消失, 就定位到了问题所在。
      * 每一步之间用 HAL_Delay 隔开, 便于在示波器上区分。
      */
+    motor_modbus_heartbeat_tick(300);
+    HAL_Delay(10);
+    motor_modbus_read_fault_info(&fault, 300U);
+    // motor_modbus_read_speed_erpm(&speed_erpm, 300U);
+    // motor_modbus_heartbeat_tick(300);
 
-      // HAL_UART_Transmit(&huart3, msg, strlen(msg), 500U);
-      HAL_UART_Transmit(&huart3, msg, strlen(msg), 500U);
+    HAL_Delay(500U);
 
-    /* 步骤1: 直接 HAL 发 "A" */
-    // {
-    //   uint8_t tag1 = 'A';
-    //   HAL_UART_Transmit(&huart3, &tag1, 1U, 500U);
-    // }
-    // HAL_Delay(50U);
+    /* 步骤2: 手动构造帧, 直接 HAL 发送 (01 06 17 72 00 64 2D 8E) */
+//    {
+//      uint8_t raw_frame[8] = {0x01, 0x06, 0x17, 0x72, 0x00, 0x64, 0x2D, 0x8E};
+//      HAL_UART_Transmit(&huart3, raw_frame, 8U, 500U);
+//    motor_modbus_heartbeat_tick(300);
+//			HAL_Delay(500U);
+//    motor_modbus_heartbeat_tick(300);
+//      uint8_t current_mod[8] = {0x01, 0x06,0x17,0x71,0x00,0x00,0xDC,0x65};
+//      HAL_UART_Transmit(&huart3, current_mod, 8U, 500U);
+//    motor_modbus_heartbeat_tick(300);
 
-    // /* 步骤2: 手动构造帧, 直接 HAL 发送 (01 06 17 72 00 64 2D 8E) */
-    // {
-    //   uint8_t raw_frame[8] = {0x01, 0x06, 0x17, 0x72, 0x00, 0x64, 0x2D, 0x8E};
-    //   HAL_UART_Transmit(&huart3, raw_frame, 8U, 500U);
-    // }
-    // HAL_Delay(50U);
+//    }
+//    HAL_Delay(50U);
 
-    // /* 步骤3: 通过 modbus_rtu_send_frame 发送同一帧 */
+    /* 步骤3: 通过 modbus_rtu_send_frame 发送同一帧 */
     // {
     //   uint8_t payload[4] = {0x17, 0x72, 0x00, 0x64};
     //   modbus_status_t s = modbus_rtu_send_frame(0x01U, 0x06U, payload, 4U, 500U);
@@ -155,7 +158,7 @@ char* msg = "hello\n";
     //   HAL_UART_Transmit(&huart3, &code, 1U, 500U);
     // }
 
-    HAL_Delay(500U);
+    // HAL_Delay(500U);
   }
   /* USER CODE END 3 */
 }

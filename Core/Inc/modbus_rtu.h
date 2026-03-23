@@ -25,6 +25,7 @@ extern "C" {
 #define MODBUS_MAX_ADU_SIZE      (256U)
 
 #define MODBUS_FUNC_READ_HOLDING_REGISTERS  (0x03U)
+#define MODBUS_FUNC_READ_INPUT_REGISTERS    (0x04U)
 #define MODBUS_FUNC_WRITE_SINGLE_REGISTER    (0x06U)
 #define MODBUS_FUNC_WRITE_MULTIPLE_REGISTERS (0x10U)
 
@@ -62,6 +63,13 @@ modbus_status_t modbus_rtu_read_holding_registers(uint8_t slave_addr,
                                                   uint16_t *register_buf,
                                                   uint16_t register_buf_size,
                                                   uint32_t timeout_ms);
+
+modbus_status_t modbus_rtu_read_input_registers(uint8_t slave_addr,
+                                               uint16_t start_addr,
+                                               uint16_t quantity,
+                                               uint16_t *register_buf,
+                                               uint16_t register_buf_size,
+                                               uint32_t timeout_ms);
 
 modbus_status_t modbus_rtu_write_single_register(uint8_t slave_addr,
                                                  uint16_t register_addr,
