@@ -1,2 +1,5 @@
-MDK-ARM/
-Drivers/
+MDK-ARM/DebugConfig/
+MDK-ARM/motor/
+MDK-ARM/RTE/
+Drivers/CMSIS/
+Drivers/STM32F4xx_HAL_Driver
