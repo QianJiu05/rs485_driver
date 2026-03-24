@@ -72,9 +72,9 @@ void motor_ctrl_stop(void)
     motor_ctrl.target_rpm = 0;
     motor_ctrl.output_current_10ma = 0;
 
-    /* 写零电流停机 */
-    motor_modbus_set_target_current_10ma(0, MOTOR_CTRL_MODBUS_TIMEOUT);
-
+    /* 写零电流停机可能不稳妥，应该设置PID = 0 */
+    // motor_modbus_set_target_current_10ma(0, MOTOR_CTRL_MODBUS_TIMEOUT);
+    motor_ctrl_set_target_rpm(0);
     /* 清空PID历史 */
     pid_clear(motor_ctrl.speed_pid);
 }
