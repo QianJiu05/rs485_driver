@@ -1,6 +1,6 @@
 #ifndef __MODBUS_RTU_H__
 #define __MODBUS_RTU_H__
-
+/* 这个驱动是底层的驱动，由motor_modbus调用，应用层只需要调用motor_modbus相关函数即可 */
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -350,6 +350,193 @@ modbus_status_t motor_modbus_read_speed_erpm(int32_t *speed_erpm,
 }
 
 /**
+ * @brief 读取实时转速并转换为机械转速 rpm。
+ * @param speed_rpm 输出指针, 接收32位有符号机械转速值(rpm)。
+ * @param pole_pairs 电机磁极对数，必须大于0。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 读取成功。
+ * @retval MODBUS_ERR_PARAM 参数无效。
+ * @retval 其他值 读取失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_read_speed_rpm(int32_t *speed_rpm,
+                                            uint16_t pole_pairs,
+                                            uint32_t timeout_ms)
+{
+  int32_t erpm = 0;
+  modbus_status_t status;
+
+  if ((speed_rpm == NULL) || (pole_pairs == 0U))
+  {
+    return MODBUS_ERR_PARAM;
+  }
+
+  status = motor_modbus_read_speed_erpm(&erpm, timeout_ms);
+  if (status != MODBUS_OK)
+  {
+    return status;
+  }
+
+  *speed_rpm = erpm / (int32_t)pole_pairs;
+  return MODBUS_OK;
+}
+
+/**
+ * @brief 读取实时占空比(5003), 范围 -1000~1000。
+ * @param duty 输出指针, 接收占空比值。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 读取成功。
+ * @retval 其他值 读取失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_read_duty(int16_t *duty,
+                                       uint32_t timeout_ms)
+{
+  uint16_t reg_val = 0U;
+  modbus_status_t status;
+
+  if (duty == NULL)
+  {
+    return MODBUS_ERR_PARAM;
+  }
+
+  status = modbus_rtu_read_input_registers((uint8_t)MOTOR_MODBUS_SLAVE_ID,
+                                           MOTOR_MODBUS_REG_REALTIME_DUTY,
+                                           1U,
+                                           &reg_val,
+                                           1U,
+                                           timeout_ms);
+  if (status != MODBUS_OK)
+  {
+    return status;
+  }
+
+  *duty = (int16_t)reg_val;
+  return MODBUS_OK;
+}
+
+/**
+ * @brief 读取实时电机电流(5006), 单位 10mA。
+ * @param current_10ma 输出指针, 接收电机电流值(10mA)。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 读取成功。
+ * @retval 其他值 读取失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_read_motor_current_10ma(int16_t *current_10ma,
+                                                     uint32_t timeout_ms)
+{
+  uint16_t reg_val = 0U;
+  modbus_status_t status;
+
+  if (current_10ma == NULL)
+  {
+    return MODBUS_ERR_PARAM;
+  }
+
+  status = modbus_rtu_read_input_registers((uint8_t)MOTOR_MODBUS_SLAVE_ID,
+                                           MOTOR_MODBUS_REG_REALTIME_MOTOR_CURRENT,
+                                           1U,
+                                           &reg_val,
+                                           1U,
+                                           timeout_ms);
+  if (status != MODBUS_OK)
+  {
+    return status;
+  }
+
+  *current_10ma = (int16_t)reg_val;
+  return MODBUS_OK;
+}
+
+/**
+ * @brief 读取实时总线电流(5007), 单位 10mA。
+ * @param current_10ma 输出指针, 接收总线电流值(10mA)。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 读取成功。
+ * @retval 其他值 读取失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_read_bus_current_10ma(int16_t *current_10ma,
+                                                   uint32_t timeout_ms)
+{
+  uint16_t reg_val = 0U;
+  modbus_status_t status;
+
+  if (current_10ma == NULL)
+  {
+    return MODBUS_ERR_PARAM;
+  }
+
+  status = modbus_rtu_read_input_registers((uint8_t)MOTOR_MODBUS_SLAVE_ID,
+                                           MOTOR_MODBUS_REG_REALTIME_BUS_CURRENT,
+                                           1U,
+                                           &reg_val,
+                                           1U,
+                                           timeout_ms);
+  if (status != MODBUS_OK)
+  {
+    return status;
+  }
+
+  *current_10ma = (int16_t)reg_val;
+  return MODBUS_OK;
+}
+
+/**
+ * @brief 读取实时角度(5009), 单位 0.01度, 无符号。
+ * @param angle 输出指针, 接收角度值(0.01度)。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 读取成功。
+ * @retval 其他值 读取失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_read_angle(uint16_t *angle,
+                                        uint32_t timeout_ms)
+{
+  if (angle == NULL)
+  {
+    return MODBUS_ERR_PARAM;
+  }
+
+  return modbus_rtu_read_input_registers((uint8_t)MOTOR_MODBUS_SLAVE_ID,
+                                         MOTOR_MODBUS_REG_REALTIME_ANGLE,
+                                         1U,
+                                         angle,
+                                         1U,
+                                         timeout_ms);
+}
+
+/**
+ * @brief 读取实时位置(5010-5011), 单位 0.01度, 有符号累加值。
+ * @param position 输出指针, 接收32位有符号位置值(0.01度)。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 读取成功。
+ * @retval 其他值 读取失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_read_position(int32_t *position,
+                                           uint32_t timeout_ms)
+{
+  uint16_t reg_buf[2] = {0};
+  modbus_status_t status;
+
+  if (position == NULL)
+  {
+    return MODBUS_ERR_PARAM;
+  }
+
+  status = modbus_rtu_read_input_registers((uint8_t)MOTOR_MODBUS_SLAVE_ID,
+                                           MOTOR_MODBUS_REG_REALTIME_POSITION_H,
+                                           2U,
+                                           reg_buf,
+                                           2U,
+                                           timeout_ms);
+  if (status != MODBUS_OK)
+  {
+    return status;
+  }
+
+  /* 高16位在 reg_buf[0], 低16位在 reg_buf[1] */
+  *position = (int32_t)(((uint32_t)reg_buf[0] << 16U) | (uint32_t)reg_buf[1]);
+  return MODBUS_OK;
+}
+
+/**
  * @brief 调试用: 纯发送目标电流帧, 不等待从站响应。
  * @param current_10ma 目标电流值，单位10mA。
  * @param timeout_ms UART发送超时时间，单位毫秒。

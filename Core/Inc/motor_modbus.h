@@ -31,6 +31,11 @@ extern "C" {
 
 #define MOTOR_MODBUS_REG_FAULT_INFO            FAULT_INFO_REG
 #define MOTOR_MODBUS_REG_REALTIME_SPEED_H      REALTIME_SPEED_REG_H
+#define MOTOR_MODBUS_REG_REALTIME_DUTY         REALTIME_DUTY_REG
+#define MOTOR_MODBUS_REG_REALTIME_MOTOR_CURRENT REALTIME_MOTOR_CURRENT_REG
+#define MOTOR_MODBUS_REG_REALTIME_BUS_CURRENT  REALTIME_BUS_CURRENT_REG
+#define MOTOR_MODBUS_REG_REALTIME_ANGLE        REALTIME_ANGLE_REG
+#define MOTOR_MODBUS_REG_REALTIME_POSITION_H   REALTIME_POSITION_REG_H
 
 #define MOTOR_MODBUS_MODE_CURRENT_CONTROL      (0U)
 #define MOTOR_MODBUS_MODE_SPEED_CONTROL        (1U)
@@ -90,6 +95,56 @@ modbus_status_t motor_modbus_read_fault_info(uint16_t *fault_info,
  */
 modbus_status_t motor_modbus_read_speed_erpm(int32_t *speed_erpm,
                                              uint32_t timeout_ms);
+
+/**
+ * @brief 读取实时转速并转换为机械转速 rpm。
+ * @param speed_rpm 输出: 实时机械转速(rpm)。
+ * @param pole_pairs 电机磁极对数，必须大于0。
+ * @param timeout_ms 通信超时时间。
+ */
+modbus_status_t motor_modbus_read_speed_rpm(int32_t *speed_rpm,
+                                            uint16_t pole_pairs,
+                                            uint32_t timeout_ms);
+
+/**
+ * @brief 读取实时占空比(5003), 范围 -1000~1000。
+ * @param duty 输出: 实时占空比值。
+ * @param timeout_ms 通信超时时间。
+ */
+modbus_status_t motor_modbus_read_duty(int16_t *duty,
+                                       uint32_t timeout_ms);
+
+/**
+ * @brief 读取实时电机电流(5006), 单位 10mA。
+ * @param current_10ma 输出: 实时电机电流(10mA)。
+ * @param timeout_ms 通信超时时间。
+ */
+modbus_status_t motor_modbus_read_motor_current_10ma(int16_t *current_10ma,
+                                                     uint32_t timeout_ms);
+
+/**
+ * @brief 读取实时总线电流(5007), 单位 10mA。
+ * @param current_10ma 输出: 实时总线电流(10mA)。
+ * @param timeout_ms 通信超时时间。
+ */
+modbus_status_t motor_modbus_read_bus_current_10ma(int16_t *current_10ma,
+                                                   uint32_t timeout_ms);
+
+/**
+ * @brief 读取实时角度(5009), 单位 0.01度, 无符号。
+ * @param angle 输出: 实时角度(0.01度)。
+ * @param timeout_ms 通信超时时间。
+ */
+modbus_status_t motor_modbus_read_angle(uint16_t *angle,
+                                        uint32_t timeout_ms);
+
+/**
+ * @brief 读取实时位置(5010-5011), 单位 0.01度, 有符号累加值。
+ * @param position 输出: 实时位置(0.01度)。
+ * @param timeout_ms 通信超时时间。
+ */
+modbus_status_t motor_modbus_read_position(int32_t *position,
+                                           uint32_t timeout_ms);
 
 /**
  * @brief 调试用: 纯发送目标电流帧, 不等待响应。

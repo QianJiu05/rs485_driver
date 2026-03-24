@@ -125,38 +125,6 @@ int main(void)
 
     HAL_Delay(500U);
 
-    /* 步骤2: 手动构造帧, 直接 HAL 发送 (01 06 17 72 00 64 2D 8E) */
-//    {
-//      uint8_t raw_frame[8] = {0x01, 0x06, 0x17, 0x72, 0x00, 0x64, 0x2D, 0x8E};
-//      HAL_UART_Transmit(&huart3, raw_frame, 8U, 500U);
-//    motor_modbus_heartbeat_tick(300);
-//			HAL_Delay(500U);
-//    motor_modbus_heartbeat_tick(300);
-//      uint8_t current_mod[8] = {0x01, 0x06,0x17,0x71,0x00,0x00,0xDC,0x65};
-//      HAL_UART_Transmit(&huart3, current_mod, 8U, 500U);
-//    motor_modbus_heartbeat_tick(300);
-
-//    }
-//    HAL_Delay(50U);
-
-    /* 步骤3: 通过 modbus_rtu_send_frame 发送同一帧 */
-    // {
-    //   uint8_t payload[4] = {0x17, 0x72, 0x00, 0x64};
-      // modbus_status_t s = modbus_rtu_send_frame(0x01U, 0x06U, payload, 4U, 500U);
-    //   /* 把返回值编码成 '0'-'5' 发出来: 0=OK,1=PARAM,2=CRC,3=TIMEOUT,4=PROTOCOL,5=HAL */
-    //   uint8_t code = (uint8_t)('0' + (uint8_t)s);
-    //   HAL_UART_Transmit(&huart3, &code, 1U, 500U);
-    // }
-    // HAL_Delay(50U);
-
-    // /* 步骤4: 通过 debug 接口发送 */
-    // {
-    //   modbus_status_t s = motor_modbus_debug_send_current_10ma(100, 500U);
-    //   uint8_t code = (uint8_t)('0' + (uint8_t)s);
-    //   HAL_UART_Transmit(&huart3, &code, 1U, 500U);
-    // }
-
-    // HAL_Delay(500U);
   }
   /* USER CODE END 3 */
 }
