@@ -1,8 +1,8 @@
 Dependencies for Project 'motor', Target 'motor': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
-F (startup_stm32f407xx.s)(0x69C1EACF)(--cpu Cortex-M4.fp.sp -g --apcs=interwork -I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include--pd "__UVISION_VERSION SETA 542" --pd "STM32F407xx SETA 1" --pd "_RTE_ SETA 1"--list startup_stm32f407xx.lst --xref -o motor\startup_stm32f407xx.o --depend motor\startup_stm32f407xx.d)
+F (startup_stm32f407xx.s)(0x69C238EE)(--cpu Cortex-M4.fp.sp -g --apcs=interwork -I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include--pd "__UVISION_VERSION SETA 542" --pd "STM32F407xx SETA 1" --pd "_RTE_ SETA 1"--list startup_stm32f407xx.lst --xref -o motor\startup_stm32f407xx.o --depend motor\startup_stm32f407xx.d)
 F (..\Core\Src\modbus_rtu.c)(0x69C1F614)(--c99 -c --cpu Cortex-M4.fp.sp -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor\modbus_rtu.o --omf_browse motor\modbus_rtu.crf --depend motor\modbus_rtu.d)
-I (../Core/Inc/modbus_rtu.h)(0x69C11F62)
+I (../Core/Inc/modbus_rtu.h)(0x69C22DC0)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x69BA40C5)
 I (../Core/Inc/stm32f4xx_hal_conf.h)(0x69C0A936)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x69BA40C5)
@@ -32,9 +32,9 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h)(0x69BA40C5)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h)(0x69BA40C5)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x69BA40C5)
 I (C:\App_For_Program\Keil5\Core\ARM\ARMCC\include\string.h)(0x5E8E3CC2)
-F (..\Core\Src\motor_modbus.c)(0x69C11F62)(--c99 -c --cpu Cortex-M4.fp.sp -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor\motor_modbus.o --omf_browse motor\motor_modbus.crf --depend motor\motor_modbus.d)
-I (../Core/Inc/motor_modbus.h)(0x69C11F62)
-I (../Core/Inc/modbus_rtu.h)(0x69C11F62)
+F (..\Core\Src\motor_modbus.c)(0x69C22DC0)(--c99 -c --cpu Cortex-M4.fp.sp -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor\motor_modbus.o --omf_browse motor\motor_modbus.crf --depend motor\motor_modbus.d)
+I (../Core/Inc/motor_modbus.h)(0x69C22DC0)
+I (../Core/Inc/modbus_rtu.h)(0x69C22DC0)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x69BA40C5)
 I (../Core/Inc/stm32f4xx_hal_conf.h)(0x69C0A936)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x69BA40C5)
@@ -65,10 +65,10 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h)(0x69BA40C5)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x69BA40C5)
 I (../Core/Inc/motor_registers.h)(0x69C0E054)
 I (C:\App_For_Program\Keil5\Core\ARM\ARMCC\include\limits.h)(0x5E8E3CC2)
-F (..\Core\Inc\modbus_rtu.h)(0x69C11F62)()
-F (..\Core\Inc\motor_modbus.h)(0x69C11F62)()
+F (..\Core\Inc\modbus_rtu.h)(0x69C22DC0)()
+F (..\Core\Inc\motor_modbus.h)(0x69C22DC0)()
 F (..\Core\Inc\motor_registers.h)(0x69C0E054)()
-F (../Core/Src/main.c)(0x69C1EACD)(--c99 -c --cpu Cortex-M4.fp.sp -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor\main.o --omf_browse motor\main.crf --depend motor\main.d)
+F (../Core/Src/main.c)(0x69C2333A)(--c99 -c --cpu Cortex-M4.fp.sp -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor\main.o --omf_browse motor\main.crf --depend motor\main.d)
 I (../Core/Inc/main.h)(0x69C0A936)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x69BA40C5)
 I (../Core/Inc/stm32f4xx_hal_conf.h)(0x69C0A936)
@@ -98,11 +98,11 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h)(0x69BA40C5
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h)(0x69BA40C5)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h)(0x69BA40C5)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x69BA40C5)
-I (../Core/Inc/modbus_rtu.h)(0x69C11F62)
-I (../Core/Inc/motor_modbus.h)(0x69C11F62)
+I (../Core/Inc/modbus_rtu.h)(0x69C22DC0)
+I (../Core/Inc/motor_modbus.h)(0x69C22DC0)
 I (../Core/Inc/motor_registers.h)(0x69C0E054)
 I (C:\App_For_Program\Keil5\Core\ARM\ARMCC\include\string.h)(0x5E8E3CC2)
-F (../Core/Src/stm32f4xx_it.c)(0x69C1EACC)(--c99 -c --cpu Cortex-M4.fp.sp -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor\stm32f4xx_it.o --omf_browse motor\stm32f4xx_it.crf --depend motor\stm32f4xx_it.d)
+F (../Core/Src/stm32f4xx_it.c)(0x69C23289)(--c99 -c --cpu Cortex-M4.fp.sp -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor\stm32f4xx_it.o --omf_browse motor\stm32f4xx_it.crf --depend motor\stm32f4xx_it.d)
 I (../Core/Inc/main.h)(0x69C0A936)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x69BA40C5)
 I (../Core/Inc/stm32f4xx_hal_conf.h)(0x69C0A936)
@@ -132,8 +132,8 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h)(0x69BA40C5
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h)(0x69BA40C5)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h)(0x69BA40C5)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x69BA40C5)
-I (../Core/Inc/stm32f4xx_it.h)(0x69C1EACC)
-F (../Core/Src/stm32f4xx_hal_msp.c)(0x69C1EACD)(--c99 -c --cpu Cortex-M4.fp.sp -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor\stm32f4xx_hal_msp.o --omf_browse motor\stm32f4xx_hal_msp.crf --depend motor\stm32f4xx_hal_msp.d)
+I (../Core/Inc/stm32f4xx_it.h)(0x69C238ED)
+F (../Core/Src/stm32f4xx_hal_msp.c)(0x69C238ED)(--c99 -c --cpu Cortex-M4.fp.sp -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_motor-IC:\App_For_Program\Keil5\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o motor\stm32f4xx_hal_msp.o --omf_browse motor\stm32f4xx_hal_msp.crf --depend motor\stm32f4xx_hal_msp.d)
 I (../Core/Inc/main.h)(0x69C0A936)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x69BA40C5)
 I (../Core/Inc/stm32f4xx_hal_conf.h)(0x69C0A936)

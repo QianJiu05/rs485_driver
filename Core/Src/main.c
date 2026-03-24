@@ -65,8 +65,8 @@ static void MX_USART3_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint16_t fault = 100U;
-int32_t speed_erpm = 0;
-    uint16_t speed=999,current=999,angle=999;
+int32_t speed_erpm = 0,speed=999;
+    uint16_t current=999,angle=999;
 /* USER CODE END 0 */
 
 /**
@@ -118,13 +118,13 @@ int main(void)
     motor_modbus_heartbeat_tick(300);
     HAL_Delay(10);
     motor_modbus_read_fault_info(&fault,300);
-    motor_modbus_set_target_current_ma(100,300);
+    motor_modbus_set_target_current_ma(500,300);
     HAL_Delay(10);
     motor_modbus_read_speed_rpm(&speed,4,300);
     HAL_Delay(10);
-    motor_modbus_read_motor_current_10ma(&current,300);
+    //motor_modbus_read_motor_current_10ma(&current,300);
     HAL_Delay(10);
-    motor_modbus_read_angle(&angle,300);
+    //motor_modbus_read_angle(&angle,300);
     motor_modbus_heartbeat_tick(300);
 
     HAL_Delay(500U);
