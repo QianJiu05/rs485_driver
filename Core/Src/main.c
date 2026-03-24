@@ -117,6 +117,7 @@ int main(void)
     
     motor_modbus_heartbeat_tick(300);
     HAL_Delay(10);
+    motor_modbus_read_fault_info(&fault,300);
     motor_modbus_set_target_current_ma(100,300);
     HAL_Delay(10);
     motor_modbus_read_speed_rpm(&speed,4,300);
