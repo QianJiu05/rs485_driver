@@ -22,9 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include "modbus_rtu.h"
-#include "motor_modbus.h"
-#include <string.h>
+#include "motor_control.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,9 +62,17 @@ static void MX_USART3_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint16_t fault = 100U;
-int32_t speed_erpm = 0,speed=999;
-    uint16_t current=999,angle=999;
+
+/* 速度环PID配置: Kp, Ki, Kd, 积分限幅, 输出限幅(10mA), 优化标志 */
+static pid_config_t speed_pid_cfg = INIT_PID_CONFIG(
+    10.0f,    /* Kp */
+    1.0f,     /* Ki */
+    0.0f,     /* Kd */
+    3000.0f,  /* 积分限幅 */
+    5000.0f,  /* 输出限幅, 即最大电流 5000*10mA=50A */
+    PID_Integral_Limit | PID_Trapezoid_Intergral
+);
+
 /* USER CODE END 0 */
 
 /**
@@ -102,9 +108,9 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  motor_modbus_init();
-
-  
+  motor_ctrl_init(&speed_pid_cfg);
+  motor_ctrl_set_target_rpm(500);  /* 目标转速 500rpm，可按需修改 */
+  motor_ctrl_start();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -114,20 +120,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    
-    motor_modbus_heartbeat_tick(300);
-    HAL_Delay(10);
-    motor_modbus_read_fault_info(&fault,300);
-    motor_modbus_set_target_current_ma(500,300);
-    HAL_Delay(10);
-    motor_modbus_read_speed_rpm(&speed,4,300);
-    HAL_Delay(10);
-    //motor_modbus_read_motor_current_10ma(&current,300);
-    HAL_Delay(10);
-    //motor_modbus_read_angle(&angle,300);
-    motor_modbus_heartbeat_tick(300);
 
-    HAL_Delay(500U);
+    motor_ctrl_loop();
+    HAL_Delay(10U);
 
   }
   /* USER CODE END 3 */
