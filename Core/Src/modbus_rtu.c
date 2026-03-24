@@ -12,6 +12,39 @@ extern UART_HandleTypeDef huart3;
 #error "MODBUS_UART_PORT 配置无效, 仅支持 USART1/USART3"
 #endif
 
+static volatile uint8_t modbus_uart_tx_done = 0U;
+static volatile uint8_t modbus_uart_rx_done = 0U;
+static volatile uint8_t modbus_uart_error = 0U;
+
+/**
+ * @brief 等待DMA完成标志位。
+ * @param done_flag 需要等待的完成标志位地址。
+ * @param timeout_ms 超时时间，单位毫秒。
+ * @retval MODBUS_OK 等待成功。
+ * @retval MODBUS_ERR_TIMEOUT 超时。
+ * @retval MODBUS_ERR_HAL UART异常。
+ */
+static modbus_status_t modbus_wait_dma_flag(volatile uint8_t *done_flag,
+                                            uint32_t timeout_ms)
+{
+  uint32_t tick_start = HAL_GetTick();
+
+  while (*done_flag == 0U)
+  {
+    if (modbus_uart_error != 0U)
+    {
+      return MODBUS_ERR_HAL;
+    }
+
+    if ((HAL_GetTick() - tick_start) >= timeout_ms)
+    {
+      return MODBUS_ERR_TIMEOUT;
+    }
+  }
+
+  return MODBUS_OK;
+}
+
 static modbus_status_t modbus_convert_hal_status(HAL_StatusTypeDef hal_status)
 {
   if (hal_status == HAL_OK)
@@ -30,9 +63,11 @@ static modbus_status_t modbus_convert_hal_status(HAL_StatusTypeDef hal_status)
 void modbus_rtu_init(void)
 {
   /**
-   * 当前版本无需额外初始化。
-   * 如后续接入 485 方向控制或 DMA，可在此扩展。
+   * 初始化DMA通信状态标志。
    */
+  modbus_uart_tx_done = 0U;
+  modbus_uart_rx_done = 0U;
+  modbus_uart_error = 0U;
 }
 
 uint16_t modbus_rtu_crc16(const uint8_t *data, uint16_t len)
@@ -75,6 +110,8 @@ modbus_status_t modbus_rtu_send_frame(uint8_t slave_addr,
   uint16_t frame_len = 0U;
   uint16_t crc = 0U;
   HAL_StatusTypeDef hal_status;
+  modbus_status_t status;
+  uint32_t tick_start = 0U;
 
   if ((payload_len > 0U) && (payload == NULL))
   {
@@ -100,8 +137,34 @@ modbus_status_t modbus_rtu_send_frame(uint8_t slave_addr,
   adu[frame_len + 1U] = (uint8_t)((crc >> 8U) & 0x00FFU);
   frame_len = (uint16_t)(frame_len + 2U);
 
-  hal_status = HAL_UART_Transmit(MODBUS_UART_HANDLE, adu, frame_len, timeout_ms);
-  return modbus_convert_hal_status(hal_status);
+  modbus_uart_tx_done = 0U;
+  modbus_uart_error = 0U;
+  hal_status = HAL_UART_Transmit_DMA(MODBUS_UART_HANDLE, adu, frame_len);
+  if (hal_status != HAL_OK)
+  {
+    return modbus_convert_hal_status(hal_status);
+  }
+
+  status = modbus_wait_dma_flag(&modbus_uart_tx_done, timeout_ms);
+  if (status != MODBUS_OK)
+  {
+    (void)HAL_UART_AbortTransmit(MODBUS_UART_HANDLE);
+    return status;
+  }
+
+  /**
+   * 等待TC置位，确保最后一个停止位已发出。
+   */
+  tick_start = HAL_GetTick();
+  while (__HAL_UART_GET_FLAG(MODBUS_UART_HANDLE, UART_FLAG_TC) == RESET)
+  {
+    if ((HAL_GetTick() - tick_start) >= timeout_ms)
+    {
+      return MODBUS_ERR_TIMEOUT;
+    }
+  }
+
+  return MODBUS_OK;
 }
 
 modbus_status_t modbus_rtu_request(uint8_t slave_addr,
@@ -129,14 +192,18 @@ modbus_status_t modbus_rtu_request(uint8_t slave_addr,
     return status;
   }
 
-  /**
-   * 采用阻塞接收: 上层传入 rx_adu_size 控制期望长度。
-   * 对于不定长报文，建议上层按功能码分两步读取。
-   */
-  hal_status = HAL_UART_Receive(MODBUS_UART_HANDLE, rx_adu, rx_adu_size, timeout_ms);
-  status = modbus_convert_hal_status(hal_status);
+  modbus_uart_rx_done = 0U;
+  modbus_uart_error = 0U;
+  hal_status = HAL_UART_Receive_DMA(MODBUS_UART_HANDLE, rx_adu, rx_adu_size);
+  if (hal_status != HAL_OK)
+  {
+    return modbus_convert_hal_status(hal_status);
+  }
+
+  status = modbus_wait_dma_flag(&modbus_uart_rx_done, timeout_ms);
   if (status != MODBUS_OK)
   {
+    (void)HAL_UART_AbortReceive(MODBUS_UART_HANDLE);
     return status;
   }
 
@@ -155,6 +222,45 @@ modbus_status_t modbus_rtu_request(uint8_t slave_addr,
   }
 
   return MODBUS_OK;
+}
+
+/**
+ * @brief UART DMA发送完成回调。
+ * @param huart UART句柄。
+ * @retval 无。
+ */
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart == MODBUS_UART_HANDLE)
+  {
+    modbus_uart_tx_done = 1U;
+  }
+}
+
+/**
+ * @brief UART DMA接收完成回调。
+ * @param huart UART句柄。
+ * @retval 无。
+ */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart == MODBUS_UART_HANDLE)
+  {
+    modbus_uart_rx_done = 1U;
+  }
+}
+
+/**
+ * @brief UART错误回调。
+ * @param huart UART句柄。
+ * @retval 无。
+ */
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+  if (huart == MODBUS_UART_HANDLE)
+  {
+    modbus_uart_error = 1U;
+  }
 }
 
 modbus_status_t modbus_rtu_read_holding_registers(uint8_t slave_addr,
