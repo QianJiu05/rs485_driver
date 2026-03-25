@@ -174,72 +174,6 @@ modbus_status_t motor_modbus_set_speed_mode(uint32_t timeout_ms)
 }
 
 /**
- * @brief 设置目标转速，单位 erpm。
- * @param speed_erpm 目标电角度转速，支持正负值。
- * @param timeout_ms ModBus通信超时时间，单位毫秒。
- * @retval MODBUS_OK 写入成功。
- * @retval 其他值 写入失败，错误码见 modbus_status_t。
- */
-modbus_status_t motor_modbus_set_target_speed_erpm(int32_t speed_erpm,
-                                                   uint32_t timeout_ms)
-{
-  return motor_modbus_write_i32(MOTOR_MODBUS_REG_TARGET_SPEED_H,
-                                speed_erpm,
-                                timeout_ms);
-}
-
-/**
- * @brief 设置速度环加速度，单位 erpm/s。
- * @param accel_erpm_s 加速度值，支持正负值。
- * @param timeout_ms ModBus通信超时时间，单位毫秒。
- * @retval MODBUS_OK 写入成功。
- * @retval 其他值 写入失败，错误码见 modbus_status_t。
- */
-modbus_status_t motor_modbus_set_speed_loop_accel_erpm_s(int32_t accel_erpm_s,
-                                                         uint32_t timeout_ms)
-{
-  return motor_modbus_write_i32(MOTOR_MODBUS_REG_SPEED_LOOP_ACCEL_H,
-                                accel_erpm_s,
-                                timeout_ms);
-}
-
-/**
- * @brief 设置速度环减速度，单位 erpm/s。
- * @param decel_erpm_s 减速度值，支持正负值。
- * @param timeout_ms ModBus通信超时时间，单位毫秒。
- * @retval MODBUS_OK 写入成功。
- * @retval 其他值 写入失败，错误码见 modbus_status_t。
- */
-modbus_status_t motor_modbus_set_speed_loop_decel_erpm_s(int32_t decel_erpm_s,
-                                                         uint32_t timeout_ms)
-{
-  return motor_modbus_write_i32(MOTOR_MODBUS_REG_SPEED_LOOP_DECEL_H,
-                                decel_erpm_s,
-                                timeout_ms);
-}
-
-/**
- * @brief 执行转速控制流程: 先设置目标转速，再切换到转速模式。
- * @param speed_erpm 目标电角度转速，单位 erpm。
- * @param timeout_ms ModBus通信超时时间，单位毫秒。
- * @retval MODBUS_OK 全流程执行成功。
- * @retval 其他值 任一步失败，错误码见 modbus_status_t。
- */
-modbus_status_t motor_modbus_set_speed_control_erpm(int32_t speed_erpm,
-                                                    uint32_t timeout_ms)
-{
-  modbus_status_t status;
-
-  status = motor_modbus_set_target_speed_erpm(speed_erpm, timeout_ms);
-  if (status != MODBUS_OK)
-  {
-    return status;
-  }
-
-  return motor_modbus_set_speed_mode(timeout_ms);
-}
-
-/**
  * @brief 设置目标转速，单位 rpm，内部自动换算为 erpm。
  * @param speed_rpm 目标机械转速，单位 rpm，支持正负值。
  * @param pole_pairs 电机磁极对数，必须大于0。
@@ -582,4 +516,74 @@ modbus_status_t motor_modbus_debug_send_heartbeat(uint32_t timeout_ms)
              MOTOR_MODBUS_REG_HEARTBEAT,
              motor_modbus_heartbeat_value,
              timeout_ms);
+}
+
+
+
+/* ========== 应该用不上的函数 ========== */
+
+/**
+ * @brief 设置目标转速，单位 erpm。
+ * @param speed_erpm 目标电角度转速，支持正负值。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 写入成功。
+ * @retval 其他值 写入失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_set_target_speed_erpm(int32_t speed_erpm,
+                                                   uint32_t timeout_ms)
+{
+  return motor_modbus_write_i32(MOTOR_MODBUS_REG_TARGET_SPEED_H,
+                                speed_erpm,
+                                timeout_ms);
+}
+
+/**
+ * @brief 设置速度环加速度，单位 erpm/s。
+ * @param accel_erpm_s 加速度值，支持正负值。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 写入成功。
+ * @retval 其他值 写入失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_set_speed_loop_accel_erpm_s(int32_t accel_erpm_s,
+                                                         uint32_t timeout_ms)
+{
+  return motor_modbus_write_i32(MOTOR_MODBUS_REG_SPEED_LOOP_ACCEL_H,
+                                accel_erpm_s,
+                                timeout_ms);
+}
+
+/**
+ * @brief 设置速度环减速度，单位 erpm/s。
+ * @param decel_erpm_s 减速度值，支持正负值。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 写入成功。
+ * @retval 其他值 写入失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_set_speed_loop_decel_erpm_s(int32_t decel_erpm_s,
+                                                         uint32_t timeout_ms)
+{
+  return motor_modbus_write_i32(MOTOR_MODBUS_REG_SPEED_LOOP_DECEL_H,
+                                decel_erpm_s,
+                                timeout_ms);
+}
+
+/**
+ * @brief 执行转速控制流程: 先设置目标转速，再切换到转速模式。
+ * @param speed_erpm 目标电角度转速，单位 erpm。
+ * @param timeout_ms ModBus通信超时时间，单位毫秒。
+ * @retval MODBUS_OK 全流程执行成功。
+ * @retval 其他值 任一步失败，错误码见 modbus_status_t。
+ */
+modbus_status_t motor_modbus_set_speed_control_erpm(int32_t speed_erpm,
+                                                    uint32_t timeout_ms)
+{
+  modbus_status_t status;
+
+  status = motor_modbus_set_target_speed_erpm(speed_erpm, timeout_ms);
+  if (status != MODBUS_OK)
+  {
+    return status;
+  }
+
+  return motor_modbus_set_speed_mode(timeout_ms);
 }

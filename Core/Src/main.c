@@ -72,7 +72,7 @@ static pid_config_t speed_pid_cfg = INIT_PID_CONFIG(
     5000.0f,  /* 输出限幅, 即最大电流 5000*10mA=50A */
     PID_Integral_Limit | PID_Trapezoid_Intergral
 );
-
+int32_t position = 999;
 /* USER CODE END 0 */
 
 /**
@@ -121,7 +121,11 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-    motor_ctrl_loop();
+    motor_modbus_heartbeat_tick(MOTOR_CTRL_MODBUS_TIMEOUT);
+    motor_modbus_set_current_control_10ma(500,MOTOR_CTRL_MODBUS_TIMEOUT);
+    motor_modbus_read_position(&position, MOTOR_CTRL_MODBUS_TIMEOUT);
+    
+    // motor_ctrl_loop();
     HAL_Delay(10U);
 
   }

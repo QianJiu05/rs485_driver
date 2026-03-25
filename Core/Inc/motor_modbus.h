@@ -60,17 +60,7 @@ modbus_status_t motor_modbus_set_current_control_10ma(int16_t current_10ma,
 
 modbus_status_t motor_modbus_set_speed_mode(uint32_t timeout_ms);
 
-modbus_status_t motor_modbus_set_target_speed_erpm(int32_t speed_erpm,
-                                                   uint32_t timeout_ms);
 
-modbus_status_t motor_modbus_set_speed_loop_accel_erpm_s(int32_t accel_erpm_s,
-                                                         uint32_t timeout_ms);
-
-modbus_status_t motor_modbus_set_speed_loop_decel_erpm_s(int32_t decel_erpm_s,
-                                                         uint32_t timeout_ms);
-
-modbus_status_t motor_modbus_set_speed_control_erpm(int32_t speed_erpm,
-                                                    uint32_t timeout_ms);
 
 modbus_status_t motor_modbus_set_target_speed_rpm(int32_t speed_rpm,
                                                   uint16_t pole_pairs,
@@ -88,13 +78,6 @@ modbus_status_t motor_modbus_set_speed_control_rpm(int32_t speed_rpm,
 modbus_status_t motor_modbus_read_fault_info(uint16_t *fault_info,
                                              uint32_t timeout_ms);
 
-/**
- * @brief 读取实时转速(5001-5002), 单位 erpm。
- * @param speed_erpm 输出: 实时转速(erpm)。
- * @param timeout_ms 通信超时时间。
- */
-modbus_status_t motor_modbus_read_speed_erpm(int32_t *speed_erpm,
-                                             uint32_t timeout_ms);
 
 /**
  * @brief 读取实时转速并转换为机械转速 rpm。
@@ -162,6 +145,24 @@ modbus_status_t motor_modbus_debug_send_current_mode(uint32_t timeout_ms);
  */
 modbus_status_t motor_modbus_debug_send_heartbeat(uint32_t timeout_ms);
 
+
+/* ========== 应该用不到的函数 ========== */
+modbus_status_t motor_modbus_set_target_speed_erpm(int32_t speed_erpm,
+                                                   uint32_t timeout_ms);
+
+modbus_status_t motor_modbus_set_speed_loop_accel_erpm_s(int32_t accel_erpm_s,
+                                                         uint32_t timeout_ms);
+
+modbus_status_t motor_modbus_set_speed_loop_decel_erpm_s(int32_t decel_erpm_s,
+                                                         uint32_t timeout_ms);
+
+modbus_status_t motor_modbus_set_speed_control_erpm(int32_t speed_erpm,
+                                                    uint32_t timeout_ms);
+
+/* 读取实时转速(5001-5002), 单位 erpm。*/
+modbus_status_t motor_modbus_read_speed_erpm(int32_t *speed_erpm,
+                                             uint32_t timeout_ms);
+                                                    
 #ifdef __cplusplus
 }
 #endif
